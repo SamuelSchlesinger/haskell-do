@@ -19,6 +19,7 @@ type MarkdownEditor = { codemirror :: CodeEditor }
 type TextAreaId = String
 type Configuration =
     { mode :: String
+    , keyMap :: String
     }
 
 -- | Hooks the function `f` into the Channel `chan` if `editor` content changes
@@ -73,7 +74,7 @@ foreign import toggleEditor :: forall e . MarkdownEditor -> Eff ( dom :: DOM | e
  
 makeCodeEditor :: ∀ eff . Channel Action -> CellId -> Eff ( channel :: CHANNEL, dom :: DOM | eff ) Action
 makeCodeEditor chan i = do
-    editor <- liftEff $ fromTextAreaCodeEditor (show i) { mode : "haskell" }
+    editor <- liftEff $ fromTextAreaCodeEditor (show i) { mode : "haskell", keyMap: "vim" }
     onChange editor chan (\code -> SaveContent i code)
     onClick editor chan $ SetCurrentCell i
     pure NoOp
